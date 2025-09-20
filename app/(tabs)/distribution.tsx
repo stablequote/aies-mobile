@@ -26,8 +26,8 @@ export default function DistributionScreen() {
       product,
       quantity,
       unitSalePrice: unitPrice,
-      paymentMethod: "cash",
-      paymentStatus: "pending",
+      paymentMethod: "Cash",
+      paymentStatus: "Pending",
       date: date ? date.toISOString() : undefined,
     };
 

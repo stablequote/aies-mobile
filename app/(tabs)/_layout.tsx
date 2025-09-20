@@ -12,10 +12,9 @@ export default function TabLayout() {
         }}
       >
         <Tabs.Screen name="index" options={{ title: "Dashboard" }} />
-        <Tabs.Screen name="distribution" options={{ title: "Distribution" }} />
-        <Tabs.Screen name="analytics" options={{ title: "Analytics" }} />
-        <Tabs.Screen name="inventory" options={{ title: "Inventory" }} />
         <Tabs.Screen name="expenses" options={{ title: "Expenses" }} />
+        <Tabs.Screen name="production" options={{ title: "Production" }} />
+        <Tabs.Screen name="distribution" options={{ title: "Distribution" }} />
       </Tabs>
     </PaperProvider>
   );

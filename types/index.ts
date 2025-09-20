@@ -18,8 +18,8 @@ export interface DistributionCreatePayload {
   product: string;
   quantity: number;
   unitSalePrice: number;
-  paymentMethod?: "cash" | "bank";
-  paymentStatus?: "pending" | "paid" | "partial";
+  paymentMethod?: "Cash" | "Bankak";
+  paymentStatus?: "Pending" | "Paid" | "Partial";
   date?: string;
 }
 

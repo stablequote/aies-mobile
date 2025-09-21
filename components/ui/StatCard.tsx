@@ -5,11 +5,12 @@ import { Card, Paragraph, Title } from "react-native-paper";
 interface Props {
   label: string;
   value: string | number;
+  style: any;
 }
 
-export default function StatCard({ label, value }: Props) {
+export default function StatCard({ label, value, style }: Props) {
   return (
-    <Card style={{ flex: 1, margin: 6 }}>
+    <Card style={style}>
       <Card.Content>
         <Title>{value}</Title>
         <Paragraph>{label}</Paragraph>

@@ -16,7 +16,7 @@ export default function Dashboard() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const { data } = await api.get("/analytics"); // assumes endpoint /api/analytics
+      const { data } = await api.get("/reports/analytics"); // assumes endpoint /api/analytics
       setAnalytics(data);
     } catch (err) {
       console.warn("fetch analytics", err);
@@ -51,8 +51,8 @@ export default function Dashboard() {
       <Paragraph style={styles.mediumTitle}>Overview of today & week</Paragraph>
 
       <View style={styles.row}>
-        <StatCard style={styles.cardContainer} label="Net Today" value={`$${(analytics?.revenue.netToday || 0).toFixed(2)}`} />
-        <StatCard style={styles.cardContainer} label="Net This Week" value={`$${(analytics?.revenue.netWeek || 0).toFixed(2)}`} />
+        <StatCard style={styles.cardContainer} label="Net Today" value={`SDG ${(analytics?.revenue.netToday || 0).toFixed(2)}`} />
+        <StatCard style={styles.cardContainer} label="Net This Week" value={`SDG ${(analytics?.revenue.netWeek || 0).toFixed(2)}`} />
       </View>
 
       <View style={styles.row}>
@@ -66,7 +66,7 @@ export default function Dashboard() {
       <Title style={styles.title}>Expenses</Title>
       <View style={[styles.cardContainer]}>
         <Title style={styles.mediumTitle}>Daily Expenses</Title>
-        <Title style={styles.title}>{`SDG 65,5`}</Title>
+        <Title style={styles.title}>{`SDG ${analytics?.expenses.today}`}</Title>
         <Title style={styles.smallTitle}>Today</Title>
         <View>
           {/* chart goes here */}
@@ -94,7 +94,7 @@ export default function Dashboard() {
       <Title style={styles.title}>Production</Title>
       <View style={[styles.cardContainer, styles.resetFlex]}>
         <Title style={styles.mediumTitle}>Production outputs</Title>
-        <Title style={styles.title}>{`1200 units`}</Title>
+        <Title style={styles.title}>{`${analytics?.production.today}`}</Title>
         <Title style={styles.smallTitle}>Today</Title>
         {/* chart goes here */}
         <LineChart
@@ -150,15 +150,15 @@ export default function Dashboard() {
         {/* progress bar goes here */}
         <View style={{marginVertical: 5}}>
           <Paragraph>Delivered</Paragraph>
-          <ProgressBar color="green" progress={0.7} style={styles.progressBar} />
+          <ProgressBar color="green" progress={analytics?.distribution.pendingCount} style={styles.progressBar} />
         </View>
         <View style={{marginVertical: 5}}>
           <Paragraph>In-Transit</Paragraph>
           <ProgressBar color="#227fcd" progress={0.4} style={styles.progressBar} />
         </View>
         <View style={{marginVertical: 5}}>
-          <Paragraph>Pending</Paragraph>
-          <ProgressBar color="orange" progress={0.8} style={styles.progressBar} />
+          <Paragraph>Pending Payment</Paragraph>
+          <ProgressBar color="orange" progress={analytics?.distribution.pendingAmount } style={styles.progressBar} />
         </View>
       </View>
     </ScrollView>

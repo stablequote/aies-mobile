@@ -1,6 +1,9 @@
 // App/(tabs)/index.tsx
 import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { Dimensions, ScrollView, StyleSheet, View } from "react-native";
+import {
+  LineChart
+} from "react-native-chart-kit";
 import { ActivityIndicator, Paragraph, ProgressBar, Title } from "react-native-paper";
 import StatCard from "../../components/ui/StatCard";
 import api from "../../services/api";
@@ -89,15 +92,56 @@ export default function Dashboard() {
       </View>
 
       <Title style={styles.title}>Production</Title>
-      <View style={styles.cardContainer}>
+      <View style={[styles.cardContainer, styles.resetFlex]}>
         <Title style={styles.mediumTitle}>Production outputs</Title>
         <Title style={styles.title}>{`1200 units`}</Title>
         <Title style={styles.smallTitle}>Today</Title>
-        <View>
-          {/* chart goes here */}
-        </View>
+        {/* chart goes here */}
+        <LineChart
+          data={{
+            labels: ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Friday"],
+            datasets: [
+              {
+                data: [
+                  Math.random() * 100,
+                  Math.random() * 100,
+                  Math.random() * 100,
+                  Math.random() * 100,
+                  Math.random() * 100,
+                  Math.random() * 100,
+                  Math.random() * 100,
+                ]
+              }
+            ]
+          }}
+          width={Dimensions.get("window").width - 50} // from react-native
+          height={220}
+          yAxisLabel="SDG"
+          yAxisSuffix="k"
+          yAxisInterval={1} // optional, defaults to 1
+          chartConfig={{
+            backgroundColor: "white",
+            backgroundGradientFrom: "#a4dfdf",
+            backgroundGradientTo: "rgba(170,184,194,1.00)",
+            decimalPlaces: 2, // optional, defaults to 2dp
+            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+            labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+            style: {
+              borderRadius: 16
+            },
+            propsForDots: {
+              r: "6",
+              strokeWidth: "2",
+              stroke: "#ffa726"
+            }
+          }}
+          bezier
+          style={{
+            marginVertical: 8,
+            borderRadius: 16
+          }}
+        />
       </View>
-
       <Title style={styles.title}>Distribution</Title>
       <View style={[styles.cardContainer, styles.resetFlex]}>
         <Title style={styles.mediumTitle}>Distribution Summary</Title>
@@ -122,7 +166,7 @@ export default function Dashboard() {
 }
 
 const styles = StyleSheet.create({
-  screenContainer: { padding: 20, backgroundColor: "#f1f6f9" },
+  screenContainer: { padding: 10, backgroundColor: "#f1f6f9" },
   cardContainer: { paddingVertical: 10, paddingHorizontal: 15, borderRadius: 10, marginBottom: 10, backgroundColor: "white", flex: 1, margin: 6 },
   row: { display: "flex", flexDirection: "row", justifyContent: "space-between" },
   title: { fontSize: 24, fontWeight: 700 },

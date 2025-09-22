@@ -8,6 +8,7 @@ import { ExpenseItem } from "../../types";
 export default function ExpensesScreen() {
   const [amount, setAmount] = useState<string>("");
   const [category, setCategory] = useState<string>("");
+  const [paymentMethod, setPaymentMethod] = useState<string>("");
   const [notes, setNotes] = useState<string>("");
   const [list, setList] = useState<ExpenseItem[]>([]);
 
@@ -26,14 +27,16 @@ export default function ExpensesScreen() {
 
   const submit = async () => {
     if (!amount) return;
-    await api.post("/expenses", {
+    await api.post("/expenses/create", {
       amount: Number(amount),
       category,
-      notes,
+      description: notes,
+      paymentMethod,
     });
     setAmount("");
     setCategory("");
     setNotes("");
+    setPaymentMethod("")
     fetchList();
   };
 
@@ -41,8 +44,9 @@ export default function ExpensesScreen() {
     <View style={styles.container}>
       <Title>Expenses</Title>
       <TextInput label="Amount" value={amount} keyboardType="numeric" onChangeText={setAmount} style={{ marginBottom: 8 }} />
+      <TextInput label="Description" value={notes} onChangeText={setNotes} style={{ marginBottom: 8 }} />
+      <TextInput label="Payment Method" value={paymentMethod} onChangeText={setPaymentMethod} style={{ marginBottom: 8 }} />
       <TextInput label="Category" value={category} onChangeText={setCategory} style={{ marginBottom: 8 }} />
-      <TextInput label="Notes" value={notes} onChangeText={setNotes} style={{ marginBottom: 8 }} />
       <Button mode="contained" onPress={submit} style={{ marginBottom: 12 }}>
         Save Expense
       </Button>

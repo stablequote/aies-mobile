@@ -1,10 +1,10 @@
 // App/(tabs)/distribution.tsx
 import DateTimePicker from "@react-native-community/datetimepicker";
-import React, { useState } from "react";
-import { Platform, ScrollView, StyleSheet, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Dimensions, Platform, ScrollView, StyleSheet, View } from "react-native";
 import { Button, Paragraph, Snackbar, TextInput, Title } from "react-native-paper";
 import api from "../../services/api";
-import { DistributionCreatePayload } from "../../types";
+import { AnalyticsResponse, DistributionCreatePayload } from "../../types";
 
 export default function DistributionScreen() {
   const [merchant, setMerchant] = useState("");
@@ -15,6 +15,26 @@ export default function DistributionScreen() {
   const [showPicker, setShowPicker] = useState(false);
   const [saving, setSaving] = useState(false);
   const [snack, setSnack] = useState<{ show: boolean; msg?: string }>({ show: false });
+
+  const [analytics, setAnalytics] = useState<AnalyticsResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const { data } = await api.get("/reports/analytics");
+      setAnalytics(data);
+    } catch (err) {
+      console.warn("fetch analytics", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
 
   const submit = async () => {
     if (!merchant || !product || !quantity || !unitPrice) {
@@ -53,8 +73,8 @@ export default function DistributionScreen() {
     <ScrollView style={styles.screenContainer}>
       <View style={styles.cardContainer}>
         <Title style={styles.title}>Log In New Distribution</Title>
-        <TextInput label="Merchant" value={merchant} onChangeText={setMerchant} style={styles.input} />
-        <TextInput label="Product" value={product} onChangeText={setProduct} style={styles.input} />
+        <TextInput label="Merchant" value={merchant} onChangeText={setMerchant} style={[styles.input, styles.fullWidthInput]} />
+        <TextInput label="Product" value={product} onChangeText={setProduct} style={[styles.input, styles.fullWidthInput]} />
         <View style={styles.row}>
           <TextInput
             label="Quantity"
@@ -102,6 +122,8 @@ export default function DistributionScreen() {
       </Snackbar>
       <View>
         <Title style={styles.title}>Recent Distributions</Title>
+        {
+          analytics?.distribution ? 
         <View style={styles.cardContainer}>
           <View style={styles.row}>
             <View style={styles.shop}>
@@ -116,20 +138,22 @@ export default function DistributionScreen() {
             </View>
           </View>
         </View>
-        <View style={styles.cardContainer}>
-          <View style={styles.row}>
-            <View style={styles.shop}>
-              <Title style={styles.mediumTitle}>ُAl Aqsa</Title>
-              <Paragraph>21 Sep, 2025</Paragraph>
-            </View>
-            <View style={styles.info}>
-              <Title style={styles.mediumTitle}>SDG 79.00</Title>
-              <View style={[styles.badge, styles.badgeUnSynced]}>
-                <Paragraph style={{color: "#2f2010", fontWeight: 400}}>unsynced</Paragraph>
-              </View>
-            </View>
-          </View>
-        </View>
+        // <View style={styles.cardContainer}>
+        //   <View style={styles.row}>
+        //     <View style={styles.shop}>
+        //       <Title style={styles.mediumTitle}>ُAl Aqsa</Title>
+        //       <Paragraph>21 Sep, 2025</Paragraph>
+        //     </View>
+        //     <View style={styles.info}>
+        //       <Title style={styles.mediumTitle}>SDG 79.00</Title>
+        //       <View style={[styles.badge, styles.badgeUnSynced]}>
+        //         <Paragraph style={{color: "#2f2010", fontWeight: 400}}>unsynced</Paragraph>
+        //       </View>
+        //     </View>
+        //   </View>
+        // </View>
+        : "no recent distribution"
+        }
       </View>
     </ScrollView>
   );
@@ -145,7 +169,8 @@ const styles = StyleSheet.create({
   smallTitle: { fontSize: 16, fontWeight: 200 },
   progressBar: { height: 15, borderRadius: 30 },
   resetFlex: { flex: -1},
-  input: { width: 150, paddingVertical: 0, marginBottom: 12, backgroundColor: "rgb(225 218 218)", borderWidth: 1, borderStyle: "solid", borderColor: " rgb(171 161 161)", borderRadius: 10 },
+  input: { width: 150, paddingVertical: 0, marginBottom: 12, backgroundColor: "rgb(225 218 218 / 21%)", borderWidth: 1, borderStyle: "solid", borderColor: " rgb(171 161 161)", borderRadius: 10 },
+  fullWidthInput: {width: Dimensions.get("window").width - 60},
   badge: {width: 70, maxWidth: 90, height: 25, padding: 5, borderRadius: 20, display: "flex", justifyContent: "center", alignItems: "center"},
   badgeSynced: {backgroundColor: "rgb(154 205 154)"},
   badgeUnSynced: {backgroundColor: "#db9d54"},
